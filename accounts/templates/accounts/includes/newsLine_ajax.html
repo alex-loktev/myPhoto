@@ -1,0 +1,21 @@
+{%for post in posts%}
+<div class="news mt-5">
+    <p>
+        <a href="{%url 'account:detailProfile' id=post.author.profile.id %}" class="mt-4 profile">
+            <img src="{{MEDIA}}{{post.author.profile.avatar.url}}" class="round " id="avatar2" alt="">
+            <span class="comment mt-2" id="comment" style="">{{post.author.username}}</span>
+        </a>
+    </p>
+    <img src="{{MEDIA}}{{post.image.url}}" id="PostImage" alt="" class="">
+    <div class='like mt-2'>
+        <span id="likes{{post.id}}">{{post.users_like.all.count}}</span>
+        {%if request.user in post.users_like.all%}
+        <button class='like-toggle basic2 like-active' data-id="{{post.id}}" id="BtnLike{{post.id}}">♥</button>
+        {%else%}
+        <button class='like-toggle basic2' data-id="{{post.id}}" id="BtnLike{{post.id}}">♥</button>
+        {%endif%}
+    </div>
+    <p class="post_desc">{{post.author.username}}: {{post.description}}</p>
+</div>
+<hr>
+{%endfor%}

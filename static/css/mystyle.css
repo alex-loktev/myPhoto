@@ -1,0 +1,152 @@
+.asteriskField{
+    display: none;
+}
+
+.round {
+    border-radius: 100px; /* Радиус скругления */
+    border: 3px solid white; /* Параметры рамки */
+    box-shadow: 0 0 7px #666; /* Параметры тени */
+}
+
+body {
+ font-family: 'Roboto', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.post{
+    border: 1px solid #6c757d; /* Параметры рамки */
+}
+
+#avatar{
+    height: 40px;
+    width: 40px;
+}
+
+#avatar2{
+    height: 40px;
+    width: 40px;
+}
+
+.comment{
+    margin-left: 10px;
+    margin-bottom: 50px;
+    font-size: 20px;
+}
+
+#post_detail{
+    width: 1000px;
+}
+
+
+#description{
+    margin-left: 55px;
+}
+
+#PostImage{
+    width: 540px;
+    height: auto;
+    border: 1px solid black;
+}
+
+*{transition: all 0.3s linear;}
+
+
+.hidden{
+  font-size: 0;
+}
+
+.heading{
+  font-family: 'Amatic SC', cursive;
+  font-size: 5em;
+  margin: 0;
+}
+
+.like,p{
+  font-family: 'Open Sans';
+}
+
+.like-toggle{
+  outline:none;
+  box-shadow:none;
+  border: none;
+  width: 40px;
+  height: 30px;
+  font-size: 1.3em;
+  border-radius: 100px;
+}
+
+.like-active.basic{
+  background: #7CC576;
+  color: white;
+}
+
+.like-toggle.basic2{
+  border: none;
+  width: 30px;
+  height: 30px;
+  font-size: 1.3em;
+  border-radius: 100px;
+  background:#438CCA;
+  color: #fff;
+}
+
+.like-active.basic2{
+  background: #F06EA9;
+}
+
+.like-toggle.basic2:not(.like-active):hover{
+  background: #438CCA;
+  width: 60px;
+}
+
+.like-toggle.basic3{
+  border: none;
+  width: 30px;
+  height: 30px;
+  font-size: 1.3em;
+  border-radius: 100px;
+  background: #438CCA;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.like-active.basic3{
+  background: #7CC576;
+  transform: rotate(-360deg);
+}
+
+.like-toggle.basic3:not(.like-active):hover{
+  background: #F26C4F;
+  transform: rotate(90deg);
+}
+
+
+a.profile {
+  color: #000 !important;
+  text-decoration: none
+}
+
+#sub{
+    margin-left: 80px;
+}
+
+div.like{
+    float: right;
+}
+
+.news{
+    margin-bottom: 50px;
+}
+
+
+
+#delete_post{
+    float: left;
+}
+
+.post_desc{
+    margin-top: 40px;
+}
+
+#inputSearch{
+    width: 455px;
+}

@@ -1,0 +1,211 @@
+{%extends 'base.html'%}
+{%load thumbnail%}
+
+{%block title%}MyPhoto|{{user.username}}{%endblock%}
+
+{%block body%}
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            {%thumbnail user.profile.avatar "180x180" crop="100%" as im%}
+            <img src="{{im.url}}" class="round" style="margin-left: 35px;" alt="">
+            {%endthumbnail%}
+            <h4 class="text-center mt-2">{{user.username}}</h4>
+            <span id="sub_btn">
+            {%if request.user != user%}
+                {% if request.user.profile in user.profile.followers.all%}
+                    <a id="sub" href="" class="sub btn btn-outline-danger"  data-action="unsubscribe"
+                       data-profile="{{user.profile.id}}">Unsubscribe</a>
+                {%else%}
+                    <a id="sub" href="" class="sub btn btn-primary"  data-action="subscribe"
+                       data-profile="{{user.profile.id}}">Subscribe</a>
+                {%endif%}
+            {%endif%}
+            </span>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h5 class="text-center">Posts</h5>
+                    <p><h5 class="text-center">{{posts.count}}</h5></p>
+                </div>
+                <div class="col">
+                    <a href="" class="profile folowers" data-toggle="modal" data-target="#staticBackdrop">
+                        <h5 class="text-center">Folowers</h5>
+                        <p><h5 class="text-center">{{user.profile.followers.all.count}}</h5></p>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="" class="profile subs" data-toggle="modal" data-target="#staticBackdrop">
+                        <h5 class="text-center">Subscriptions</h5>
+                        <p><h5 class="text-center">{{user.profile.subs.all.count}}</h5></p>
+                    </a>
+                </div>
+            </div>
+            <hr>
+            <p>{{user.profile.description}}</p>
+        </div>
+    </div>
+    <hr>
+    <div class="row mt-4">
+        {%for post in posts%}
+        <div class="col-sm" >
+            {%thumbnail post.image "345x345" crop="100%" as im%}
+            <a href="" data-toggle="modal"  data-target="#myModal" data-id="{{post.id}}" class="post">
+                <img src="{{im.url}}" class="post mt-2" alt="">
+            </a>
+            {%endthumbnail%}
+        </div>
+        {%endfor%}
+    </div>
+</div>
+
+<div class="modal  fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" id="post_detail" style="margin-left: -200px;">
+      <div class="modal-header">
+          <img src="" class="round" id="avatar" alt="">
+        <h5 class="modal-title ml-3 mt-1" id="exampleModalLongTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row">
+              <div class="col">
+                  <img src="" alt="" id="PostImage">
+              </div>
+              <div class="col-5">
+                  <img src="" class="round" id="avatar2" alt="">
+                  <span class="comment" id="comment"></span>
+                  <p id="description"></p>
+              </div>
+          </div>
+      </div>
+        <div class="modal-footer">
+                <div id="delete">
+                    <a href="" class="btn btn-danger mr-4" id="delete_post">Delete</a>
+                </div>
+            <div class='like'>
+                <span id="likes"></span>
+                <button class='like-toggle basic2' id="BtnLike">♥</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock%}
+{%block domready%}
+    String.prototype.format = String.prototype.f = function(){
+	var args = arguments;
+	return this.replace(/\{(\d+)\}/g, function(m,n){
+		return args[n] ? args[n] : m;
+	});
+    };
+
+    var post_id;
+    $(function(){
+      $('.like-toggle').click(function(){
+        $(this).toggleClass('like-active');
+      });
+    });
+    $('a.post').click(function(e){
+        e.preventDefault();
+        $.ajax({
+        type: "GET",
+        url: "{%url 'posts:postDetail'%}",
+        data: {id: $(this).data('id')},
+          success: function(msg){
+            if (msg['delete']){
+                document.getElementById('delete_post').dataset.id=msg['id'];
+            }
+            else{
+                document.getElementById('delete').innerHTML = "";
+            }
+            document.getElementById('delete_post')
+            document.getElementById('exampleModalLongTitle').innerHTML = msg['author'];
+            document.getElementById('PostImage').src = msg['image'];
+            document.getElementById('avatar').src = msg['avatar'];
+            document.getElementById('avatar2').src = msg['avatar'];
+            document.getElementById('comment').innerHTML = msg['author'];
+            document.getElementById('description').innerHTML = msg['description'];
+            document.getElementById('likes').innerHTML = msg['likes'];
+            post_id = msg['id'];
+            if (msg['action'] == "like"){
+                document.getElementById('BtnLike').classList.remove('like-active');
+            }
+            else{
+                document.getElementById('BtnLike').classList.add('like-active');
+            }
+          }
+        })
+    });
+
+    $('a.subs').click(function(e){
+        document.getElementById('staticBackdropLabel').innerHTML = 'Subscriptions';
+        document.getElementById('modal-body').innerHTML ='{%for user in user.profile.subs.all%}<p><a href="{%url 'account:detailProfile' id=user.id %}" class="mt-2 profile"><img src="{{MEDIA}}{{user.avatar.url}}" class="round mr-3" id="avatar2" alt="">{{user.user.username}}</a></p>{%endfor%}';
+    });
+    $('a.folowers').click(function(e){
+        document.getElementById('staticBackdropLabel').innerHTML = 'Followers';
+        document.getElementById('modal-body').innerHTML ='{%for user in user.profile.followers.all%}<p><a href="{%url 'account:detailProfile' id=user.id %}" class="mt-2 profile"><img src="{{MEDIA}}{{user.avatar.url}}" class="round mr-3" id="avatar2" alt="">{{user.user.username}}</a></p>{%endfor%}';
+    });
+
+    $('button.like-toggle').click(function(e){
+        e.preventDefault();
+        $.ajax({
+        type: "POST",
+        url: "{%url 'posts:postDetail'%}",
+        data: {id: post_id},
+        success: function(msg){
+            document.getElementById('likes').innerHTML = msg['likes'];
+            if (msg['action'] == "like"){
+                document.getElementById('BtnLike').classList.add('like-active');
+            }
+            else{
+                document.getElementById('BtnLike').classList.remove('like-active');
+            }
+        }
+        })
+    });
+
+    $('a#sub').click(function(e){
+        console.log('zaebis');
+        $.ajax({
+            type: "POST",
+            url: "{%url 'account:subscribe'%}",
+            data: {profile: $(this).data('profile'),
+                    action: $(this).data('action')},
+            success: function(msg){
+                location.reload();
+            }
+        })
+        });
+
+    $('a#delete_post').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "{%url 'account:deletePost'%}",
+            data: {id: $(this).data('id')},
+            success: function(){
+                location.reload();
+            }
+        })
+    });
+
+{%endblock%}

@@ -1,0 +1,100 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{%block title%}base{%endblock%}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css'%}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-grid.css'%}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-reboot.css'%}">
+    <link rel="stylesheet" href="{% static 'css/mystyle.css'%}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <div class="container">
+        <a class="navbar-brand" >MyPhoto</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {%if user.is_authenticated%}
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active ml-4">
+                    <a class="nav-link" href="{%url 'account:profile'%}">Profile <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active ml-4">
+                    <a class="nav-link" href="{% url 'account:settings' pk=request.user.profile.id%}">Settings<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active ml-4">
+                    <a class="nav-link" href="{%url 'account:NewsLine'%}">News Line<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active ml-4">
+                    <a class="nav-link" href="{%url 'account:postIt'%}">Post It<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="{%url 'account:search'%}" >
+                <input class="form-control mr-sm-2" type="search" placeholder="Username" aria-label="Search"  name="inputSearch">
+                <button class="btn btn-outline-success my-2 my-sm-0" id="btnSearch" type="submit">Search</button>
+            </form>
+        </div>
+        {%endif%}
+    </div>
+</nav>
+{%block body%}
+{%endblock%}
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="{%static 'js/myJS.js'%}"></script>
+<script src="{%static 'js/jquery.js'%}"></script>
+<script>
+    var csrftoken = Cookies.get('csrftoken');
+    function csrfSafeMethod(method){
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    $(document).ready(function()
+    {
+        function renameBTN(i){
+        console.log('zaebis');
+        $.ajax({
+            type: "POST",
+            url: "{%url 'account:subscribe'%}",
+            data: {profile: $(i).data('profile'),
+                    action: $(i).data('action')},
+            success: function(msg){
+                console.log(msg['action']);
+                let a = document.getElementById('sub');
+                if (msg['action'] == 'unsubscribe'){
+                    a.innerHTML = 'Unsubscribe';
+                    a.dataset.action = msg['action'];
+                }
+                else{
+                    a.innerHTML = 'Subscribe';
+                    a.dataset.action = msg['action'];
+                }
+            }
+        });
+    };
+        {% block domready %}
+        {% endblock %}
+    });
+</script>
+</html>
