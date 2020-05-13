@@ -17,9 +17,13 @@ class PostDetail(View):
             action = "dislike"
         else:
             action = "like"
+        if post.author.profile.avatar:
+            avatar = post.author.profile.avatar.url
+        else:
+            avatar = post.author.profile.default_avatar.url
         return JsonResponse({'author': post.author.username,
                              'image': post.image.url,
-                             'avatar': post.author.profile.avatar.url,
+                             'avatar': avatar,
                              'description': post.description,
                              'likes': post.users_like.count(),
                              'id': post.id,

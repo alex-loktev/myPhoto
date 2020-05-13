@@ -7,9 +7,11 @@
 <div class="container">
     <div class="row">
         <div class="col-3">
-            {%thumbnail user.profile.avatar "180x180" crop="100%" as im%}
-            <img src="{{im.url}}" class="round" style="margin-left: 35px;" alt="">
-            {%endthumbnail%}
+            {%if user.profile.avatar%}
+            <img src="{{user.profile.avatar.url}}" class="round" id="avatar" style="margin-left: 40px;" alt="">
+            {%else%}
+            <img src="{{user.profile.default_avatar.url}}" class="round" id="avatar" style="margin-left: 40px;" alt="">
+            {%endif%}
             <h4 class="text-center mt-2">{{user.username}}</h4>
             <span id="sub_btn">
             {%if request.user != user%}
@@ -50,11 +52,9 @@
     <div class="row mt-4">
         {%for post in posts%}
         <div class="col-sm" >
-            {%thumbnail post.image "345x345" crop="100%" as im%}
             <a href="" data-toggle="modal"  data-target="#myModal" data-id="{{post.id}}" class="post">
-                <img src="{{im.url}}" class="post mt-2" alt="">
+                <img src="{{post.image.url}}" class="post mt-2" alt="">
             </a>
-            {%endthumbnail%}
         </div>
         {%endfor%}
     </div>
@@ -64,7 +64,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content" id="post_detail" style="margin-left: -200px;">
       <div class="modal-header">
-          <img src="" class="round" id="avatar" alt="">
+          <img src="" class="round" id="avatar2" alt="">
         <h5 class="modal-title ml-3 mt-1" id="exampleModalLongTitle"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -84,7 +84,7 @@
       </div>
         <div class="modal-footer">
                 <div id="delete">
-                    <a href="" class="btn btn-danger mr-4" id="delete_post">Delete</a>
+                    <a href="" class="btn btn-danger mr-4" id="delete_post" >Delete</a>
                 </div>
             <div class='like'>
                 <span id="likes"></span>
@@ -140,8 +140,8 @@
             document.getElementById('delete_post')
             document.getElementById('exampleModalLongTitle').innerHTML = msg['author'];
             document.getElementById('PostImage').src = msg['image'];
-            document.getElementById('avatar').src = msg['avatar'];
-            document.getElementById('avatar2').src = msg['avatar'];
+            document.getElementsByClassName('round')[1].src = msg['avatar'];
+            document.getElementsByClassName('round')[2].src = msg['avatar'];
             document.getElementById('comment').innerHTML = msg['author'];
             document.getElementById('description').innerHTML = msg['description'];
             document.getElementById('likes').innerHTML = msg['likes'];
@@ -158,11 +158,11 @@
 
     $('a.subs').click(function(e){
         document.getElementById('staticBackdropLabel').innerHTML = 'Subscriptions';
-        document.getElementById('modal-body').innerHTML ='{%for user in user.profile.subs.all%}<p><a href="{%url 'account:detailProfile' id=user.id %}" class="mt-2 profile"><img src="{{MEDIA}}{{user.avatar.url}}" class="round mr-3" id="avatar2" alt="">{{user.user.username}}</a></p>{%endfor%}';
+        document.getElementById('modal-body').innerHTML ='{%for user in user.profile.subs.all%}<p><a href="{%url 'account:detailProfile' id=user.id %}" class="mt-2 profile"><img src="{%if user.profile.avatar%}{{user.profile.avatar.url}}{%else%}{{user.default_avatar.url}}{%endif%}" class="round mr-3" id="avatar2" alt="">{{user.user.username}}</a></p>{%endfor%}';
     });
     $('a.folowers').click(function(e){
         document.getElementById('staticBackdropLabel').innerHTML = 'Followers';
-        document.getElementById('modal-body').innerHTML ='{%for user in user.profile.followers.all%}<p><a href="{%url 'account:detailProfile' id=user.id %}" class="mt-2 profile"><img src="{{MEDIA}}{{user.avatar.url}}" class="round mr-3" id="avatar2" alt="">{{user.user.username}}</a></p>{%endfor%}';
+        document.getElementById('modal-body').innerHTML ='{%for user in user.profile.followers.all%}<p><a href="{%url 'account:detailProfile' id=user.id %}" class="mt-2 profile"><img src="{%if user.profile.avatar%}{{user.profile.avatar.url}}{%else%}{{user.default_avatar.url}}{%endif%}" class="round mr-3" id="avatar2" alt="">{{user.user.username}}</a></p>{%endfor%}';
     });
 
     $('button.like-toggle').click(function(e){

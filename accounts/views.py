@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse
 from posts.models import Post
 from .forms import *
+from .models import Profile
 from django.urls import reverse
 
 
@@ -58,6 +59,21 @@ class SubscribeOrUnsibscribe(LoginRequiredMixin, View):
             return JsonResponse({'action': 'subscribe'})
 
 
+# class SettingsView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         profile = Profile.objects.get(id=pk)
+#         form = SettingForm(instance=profile)
+#         return render(request, 'accounts/settings.html', {'form': form})
+#
+#     def post(self, request, pk):
+#         profile = Profile.objects.get(id=pk)
+#         form = SettingForm(request.POST, request.FILES, instance=profile)
+#         if form.is_valid():
+#             profile = form.save(commit=False)
+#             profile.avatar = form.cleaned_data['avatar']
+#             profile.save()
+#             return redirect('account:profile')
+#         return render(request, 'accounts/settings.html', {'form': profile})
 class SettingsView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['avatar', 'name', 'surname', 'description']
@@ -89,14 +105,13 @@ class NewsLineView(LoginRequiredMixin, View):
         return render(request, 'accounts/newsLine.html', {'posts': posts})
 
 
-class PostAddView(LoginRequiredMixin,FormView):
+class PostAddView(LoginRequiredMixin, FormView):
     form_class = PostAddForm
     template_name = 'accounts/postForm.html'
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
-        post.image = self.request.FILES['image']
         post.save()
         return HttpResponseRedirect(self.get_success_url())
 

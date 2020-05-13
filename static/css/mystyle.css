@@ -14,11 +14,13 @@ body {
 
 .post{
     border: 1px solid #6c757d; /* Параметры рамки */
+    height: 340px;
+    width: 340px;
 }
 
 #avatar{
-    height: 40px;
-    width: 40px;
+    height: 180px;
+    width: 180px;
 }
 
 #avatar2{

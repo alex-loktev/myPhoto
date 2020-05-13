@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'sorl.thumbnail',
     'posts',
+    'django_cleanup'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

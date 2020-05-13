@@ -10,7 +10,11 @@
             {%for user in users%}
             <p class="mt-3">
                 <a href="{%url 'account:detailProfile' id=user.profile.id%}" class="profile">
-                    <img src="{{MEDIA}}{{user.profile.avatar.url}}" alt="" class="round mr-2" id="avatar">
+                    {%if user.profile.avatar%}
+                    <img src="{{user.profile.avatar.url}}" alt="" class="round mr-2" id="avatar2">
+                    {%else%}
+                    <img src="{{user.profile.default_avatar.url}}" alt="" class="round mr-2" id="avatar2">
+                    {%endif%}
                     <span>{{user.username}}</span>
                 </a>
             </p>

@@ -7,7 +7,7 @@ from django.utils import timezone
 class Post(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    image = models.ImageField(upload_to='posts')
+    image = models.ImageField(upload_to='posts/')
     description = models.TextField(blank=True, null=True)
     users_like = models.ManyToManyField(User, related_name='images_liked', blank=True)
     created = models.DateTimeField(auto_now_add=True)
