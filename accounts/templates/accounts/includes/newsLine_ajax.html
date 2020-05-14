@@ -2,7 +2,11 @@
 <div class="news mt-5">
     <p>
         <a href="{%url 'account:detailProfile' id=post.author.profile.id %}" class="mt-4 profile">
+            {%if post.author.profile.avatar%}
             <img src="{{post.author.profile.avatar.url}}" class="round " id="avatar2" alt="">
+            {%else%}
+            <img src="{{post.author.profile.default_avatar.url}}" class="round " id="avatar2" alt="">
+            {%endif%}
             <span class="comment mt-2" id="comment" style="">{{post.author.username}}</span>
         </a>
     </p>

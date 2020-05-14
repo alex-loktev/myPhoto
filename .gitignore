@@ -14,3 +14,4 @@ build/
 tests/report/
 /migrations/
 /cache/
+db.sqlite3
