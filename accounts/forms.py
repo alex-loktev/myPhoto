@@ -42,6 +42,14 @@ class SettingForm(forms.ModelForm):
         model = Profile
         fields = ('avatar', 'name', 'surname', 'description')
 
+    def clean_avatar(self):
+        avatar = str(self.cleaned_data['avatar'])
+        valid_extension = ['jpg', 'jpeg', 'png']
+        extension = avatar.split('.')[-1].lower()
+        if extension not in valid_extension:
+            raise forms.ValidationError('Your image isn\'t valid')
+        return self.cleaned_data['avatar']
+
 
 class PostAddForm(forms.ModelForm):
     class Meta:
@@ -49,9 +57,9 @@ class PostAddForm(forms.ModelForm):
         fields = ('image', 'description',)
 
     def clean_image(self):
-        image = self.image
+        image = str(self.cleaned_data['image'])
         valid_extension = ['jpg', 'jpeg', 'png']
         extension = image.split('.')[-1].lower()
         if extension not in valid_extension:
             raise forms.ValidationError('Your image isn\'t valid')
-        return image
+        return self.cleaned_data['image']
