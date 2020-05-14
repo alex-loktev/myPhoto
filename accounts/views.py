@@ -19,11 +19,10 @@ class RegistrationView(View):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
+            # user.set_password(form.cleaned_data['password'])
             user.save()
             Profile.objects.create(user=user)
             return redirect('account:login')
-        form = RegistrationForm()
         return render(request, 'accounts/registration.html', {'form': form})
 
 
@@ -59,21 +58,6 @@ class SubscribeOrUnsibscribe(LoginRequiredMixin, View):
             return JsonResponse({'action': 'subscribe'})
 
 
-# class SettingsView(LoginRequiredMixin, View):
-#     def get(self, request, pk):
-#         profile = Profile.objects.get(id=pk)
-#         form = SettingForm(instance=profile)
-#         return render(request, 'accounts/settings.html', {'form': form})
-#
-#     def post(self, request, pk):
-#         profile = Profile.objects.get(id=pk)
-#         form = SettingForm(request.POST, request.FILES, instance=profile)
-#         if form.is_valid():
-#             profile = form.save(commit=False)
-#             profile.avatar = form.cleaned_data['avatar']
-#             profile.save()
-#             return redirect('account:profile')
-#         return render(request, 'accounts/settings.html', {'form': profile})
 class SettingsView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['avatar', 'name', 'surname', 'description']
@@ -134,5 +118,5 @@ class DeletePost(LoginRequiredMixin, View):
 class SearchUserView(LoginRequiredMixin, View):
     def get(self, request):
         username = request.GET.get('inputSearch', None)
-        users = User.objects.all().filter(username__startswith=username)
+        users = User.objects.exclude(username=request.user.username).filter(username__startswith=username)
         return render(request, 'accounts/searchList.html', {'users': users})
