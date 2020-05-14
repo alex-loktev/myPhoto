@@ -15,3 +15,4 @@ tests/report/
 /migrations/
 /cache/
 db.sqlite3
+**/migrations/
